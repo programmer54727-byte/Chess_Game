@@ -1,0 +1,6 @@
+{
+  "name": "Chess Arena",
+  "description": "Feature-rich Chess app with real-time matchmaking, engine practice, move history, PGN export, puzzles, daily challenges, rating system, and social community.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

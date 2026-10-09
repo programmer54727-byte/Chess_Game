@@ -1,0 +1,147 @@
+{
+  "entities": {
+    "UserProfile": {
+      "title": "UserProfile",
+      "description": "User account statistics and chess rating information",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "displayName": { "type": "string" },
+        "email": { "type": "string" },
+        "rating": { "type": "integer" },
+        "gamesPlayed": { "type": "integer" },
+        "wins": { "type": "integer" },
+        "losses": { "type": "integer" },
+        "draws": { "type": "integer" },
+        "puzzlesSolved": { "type": "integer" },
+        "dailyStreak": { "type": "integer" },
+        "lastDailyPuzzleDate": { "type": "string" },
+        "bio": { "type": "string" },
+        "achievements": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "displayName", "rating"]
+    },
+    "MatchmakingQueueEntry": {
+      "title": "MatchmakingQueueEntry",
+      "description": "Active player waiting in the matchmaking pool",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "displayName": { "type": "string" },
+        "rating": { "type": "integer" },
+        "status": { "type": "string", "enum": ["waiting", "matched", "cancelled"] },
+        "gameId": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "displayName", "rating", "status"]
+    },
+    "ChessGame": {
+      "title": "ChessGame",
+      "description": "Online chess match record with current state and move history",
+      "type": "object",
+      "properties": {
+        "gameId": { "type": "string" },
+        "whitePlayerId": { "type": "string" },
+        "whitePlayerName": { "type": "string" },
+        "whitePlayerRating": { "type": "integer" },
+        "blackPlayerId": { "type": "string" },
+        "blackPlayerName": { "type": "string" },
+        "blackPlayerRating": { "type": "integer" },
+        "fen": { "type": "string" },
+        "moves": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "pgn": { "type": "string" },
+        "currentTurn": { "type": "string", "enum": ["white", "black"] },
+        "status": { "type": "string", "enum": ["in_progress", "white_won", "black_won", "draw"] },
+        "statusReason": { "type": "string" },
+        "winnerId": { "type": "string" },
+        "isRanked": { "type": "boolean" },
+        "whiteRatingChange": { "type": "integer" },
+        "blackRatingChange": { "type": "integer" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["gameId", "whitePlayerId", "blackPlayerId", "fen", "status", "currentTurn"]
+    },
+    "GameMessage": {
+      "title": "GameMessage",
+      "description": "Chat message sent inside an active game",
+      "type": "object",
+      "properties": {
+        "messageId": { "type": "string" },
+        "senderId": { "type": "string" },
+        "senderName": { "type": "string" },
+        "text": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["messageId", "senderId", "senderName", "text"]
+    },
+    "CommunityPost": {
+      "title": "CommunityPost",
+      "description": "Public post on the chess community bulletin board",
+      "type": "object",
+      "properties": {
+        "postId": { "type": "string" },
+        "authorId": { "type": "string" },
+        "authorName": { "type": "string" },
+        "authorRating": { "type": "integer" },
+        "title": { "type": "string" },
+        "content": { "type": "string" },
+        "likesCount": { "type": "integer" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["postId", "authorId", "authorName", "title", "content"]
+    },
+    "DirectMessage": {
+      "title": "DirectMessage",
+      "description": "Private direct message between two players",
+      "type": "object",
+      "properties": {
+        "messageId": { "type": "string" },
+        "senderId": { "type": "string" },
+        "senderName": { "type": "string" },
+        "receiverId": { "type": "string" },
+        "receiverName": { "type": "string" },
+        "participants": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "text": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["messageId", "senderId", "receiverId", "participants", "text"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": { "$ref": "#/entities/UserProfile" },
+      "description": "User profile statistics and rating documents"
+    },
+    "/matchmaking_queue/{userId}": {
+      "schema": { "$ref": "#/entities/MatchmakingQueueEntry" },
+      "description": "Matchmaking queue pool for pairing players"
+    },
+    "/games/{gameId}": {
+      "schema": { "$ref": "#/entities/ChessGame" },
+      "description": "Active and completed chess games"
+    },
+    "/games/{gameId}/messages/{messageId}": {
+      "schema": { "$ref": "#/entities/GameMessage" },
+      "description": "In-game chat room messages"
+    },
+    "/community_posts/{postId}": {
+      "schema": { "$ref": "#/entities/CommunityPost" },
+      "description": "Global community forum posts"
+    },
+    "/direct_messages/{messageId}": {
+      "schema": { "$ref": "#/entities/DirectMessage" },
+      "description": "Private direct messaging between players"
+    }
+  }
+}
